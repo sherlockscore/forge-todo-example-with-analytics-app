@@ -2,10 +2,10 @@ import React, { useEffect, useState, Fragment } from 'react';
 import { invoke } from '@forge/bridge';
 
 // Atlaskit
-import { LoadingButton as Button } from '@atlaskit/button';
+import LoadingButton from '@atlaskit/button/loading-button';   
 import { Checkbox } from '@atlaskit/checkbox';
-import CloseIcon from '@atlaskit/icon/glyph/editor/close';
-import TrashIcon from '@atlaskit/icon/glyph/editor/remove';
+import EditorCloseIcon from '@atlaskit/icon/glyph/editor/close';
+import TrashIcon from '@atlaskit/icon/glyph/trash';
 import Textfield from '@atlaskit/textfield';
 import Lozenge from '@atlaskit/lozenge';
 import Spinner from '@atlaskit/spinner';
@@ -121,7 +121,7 @@ function App() {
               <Button size="small" spacing="none" onClick={() => deleteTodo(id)}>
                 <IconContainer>
                   <Icon>
-                    <CloseIcon />
+                    <EditorCloseIcon />
                   </Icon>
                 </IconContainer>
               </Button>
@@ -133,7 +133,7 @@ function App() {
   );
 
   const DeleteAll = () => isDeleteAllShowing ? (
-    <Button
+    <LoadingButton
       appearance="danger"
       spacing="compact"
       isLoading={isDeletingAll}
@@ -141,15 +141,15 @@ function App() {
       onClick={deleteAllTodos}
     >
       Delete All
-    </Button>
+    </LoadingButton>
   ) : (
-    <Button appearance="subtle" spacing="none" onClick={() => setDeleteAllShowing(true)}>
+    <LoadingButton appearance="subtle" spacing="none" onClick={() => setDeleteAllShowing(true)}>
       <IconContainer>
         <Icon>
           <TrashIcon />
         </Icon>
       </IconContainer>
-    </Button>
+    </LoadingButton>
   );
 
   const CompletedLozenge = () => <Lozenge>{completedCount}/{totalCount} Completed</Lozenge>;
