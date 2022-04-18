@@ -17,3 +17,6 @@ resources:
 permissions:
   scopes:
     - storage:app
+  content:
+    styles:
+      - 'unsafe-inline'  

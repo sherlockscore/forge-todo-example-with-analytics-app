@@ -37,6 +37,11 @@ npm run build
 ### Deployment
 For this section, ensure you have navigated back to the root of the repository.
 
+- Install the forge dependencies by running:
+```
+npm install
+```
+
 - Build and deploy your app by running:
 ```
 forge deploy
