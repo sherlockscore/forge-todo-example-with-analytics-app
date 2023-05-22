@@ -9,6 +9,7 @@ import TrashIcon from '@atlaskit/icon/glyph/trash';
 import Textfield from '@atlaskit/textfield';
 import Lozenge from '@atlaskit/lozenge';
 import Spinner from '@atlaskit/spinner';
+import Button from '@atlaskit/button';
 
 // Custom Styles
 import {
