@@ -20,3 +20,6 @@ permissions:
   content:
     styles:
       - 'unsafe-inline'  
+app:
+  runtime:
+    name: nodejs18x
