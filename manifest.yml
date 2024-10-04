@@ -22,4 +22,4 @@ permissions:
       - 'unsafe-inline'  
 app:
   runtime:
-    name: nodejs18x
+    name: nodejs20.x
