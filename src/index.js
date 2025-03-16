@@ -1,5 +1,5 @@
 import Resolver from '@forge/resolver';
-import { storage } from '@forge/api';
+import { kvs } from '@forge/kvs';
 
 const resolver = new Resolver();
 
@@ -12,7 +12,7 @@ const getListKeyFromContext = (context) => {
 }
 
 const getAll = async (listId) => {
-  return await storage.get(listId) || [];
+  return await kvs.get(listId) || [];
 }
 
 resolver.define('get-all', ({ context }) => {
@@ -29,7 +29,7 @@ resolver.define('create', async ({ payload, context }) => {
     ...payload,
   };
 
-  await storage.set(getListKeyFromContext(context), [...records, newRecord]);
+  await kvs.set(getListKeyFromContext(context), [...records, newRecord]);
 
   return newRecord;
 });
@@ -45,7 +45,7 @@ resolver.define('update', async ({ payload, context }) => {
     return item;
   })
 
-  await storage.set(getListKeyFromContext(context), records);
+  await kvs.set(getListKeyFromContext(context), records);
 
   return payload;
 });
@@ -56,13 +56,13 @@ resolver.define('delete', async ({ payload, context }) => {
 
   records = records.filter(item => item.id !== payload.id)
 
-  await storage.set(getListKeyFromContext(context), records);
+  await kvs.set(getListKeyFromContext(context), records);
 
   return payload;
 });
 
 resolver.define('delete-all', ({ context }) => {
-  return storage.set(getListKeyFromContext(context), []);
+  return kvs.set(getListKeyFromContext(context), []);
 });
 
 export const handler = resolver.getDefinitions();
