@@ -21,7 +21,8 @@
     "react-scripts": "^5.0.1"
   },
   "resolutions": {
-    "@babel/traverse": "^7.23.2"
+    "@babel/traverse": "^7.23.2",
+    "@babel/runtime": "^7.26.10"
   },
   "scripts": {
     "start": "GENERATE_SOURCEMAP=false react-scripts start",
