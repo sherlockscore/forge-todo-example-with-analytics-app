@@ -16,6 +16,15 @@ import {
   Card, Row, Icon, IconContainer, Status, SummaryActions, SummaryCount, SummaryFooter,
   ScrollContainer, Form, LoadingContainer
 } from './Styles';
+import {
+  group,
+  identify,
+  trackDeleteAll,
+  trackTodoItemChecked,
+  trackTodoItemCreated,
+  trackTodoItemDeleted,
+  trackTodoItemUnchecked
+} from "./analytics/events";
 
 function App() {
   const [todos, setTodos] = useState(null);
@@ -24,12 +33,20 @@ function App() {
   const [isDeleteAllShowing, setDeleteAllShowing] = useState(false);
   const [isDeletingAll, setDeletingAll] = useState(false);
 
+  useEffect(() => {
+    // Trigger identify and group analytics on load
+    identify();
+    group();
+  }, []);
+
   if (!isFetched) {
     setIsFetched(true);
     invoke('get-all').then(setTodos);
   }
 
   const createTodo = async (label) => {
+    trackTodoItemCreated();
+
     const newTodoList = [...todos, { label, isChecked: false, isSaving: true }];
 
     setTodos(newTodoList);
@@ -39,6 +56,12 @@ function App() {
     setTodos(
       todos.map(todo => {
         if (todo.id === id) {
+          if (todo.isChecked) {
+            trackTodoItemUnchecked();
+          } else {
+            trackTodoItemChecked();
+          }
+
           return { ...todo, isChecked: !todo.isChecked, isSaving: true };
         }
         return todo;
@@ -50,6 +73,8 @@ function App() {
     setTodos(
       todos.map(todo => {
         if (todo.id === id) {
+          trackTodoItemDeleted();
+
           return { ...todo, isDeleting: true };
         }
         return todo;
@@ -58,6 +83,8 @@ function App() {
   }
 
   const deleteAllTodos = async () => {
+    trackDeleteAll();
+
     setDeletingAll(true);
 
     await invoke('delete-all');

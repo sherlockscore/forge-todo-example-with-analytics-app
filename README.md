@@ -18,6 +18,12 @@ See [Set up Forge](https://developer.atlassian.com/platform/forge/set-up-forge/)
 forge register
 ```
 
+### Configure API Key
+- Set the Accoil API key in the environment. This is available from you account in Accoil.
+```
+forge variables set ANALYTICS_API_KEY <api_key>
+```
+
 ### Frontend
 - Change into the frontend directory by running:
 ```

@@ -1,12 +1,13 @@
 import Resolver from '@forge/resolver';
 import { kvs } from '@forge/kvs';
+import {group, identify, trackEvent} from "./analytics/resolvers";
+import {dailyGroupAnalytics} from "./analytics/schedule";
 
 const resolver = new Resolver();
 
 const getUniqueId = () => '_' + Math.random().toString(36).substr(2, 9);
 
 const getListKeyFromContext = (context) => {
-  console.log(context);
   const { localId: id } = context;
   return id.split('/')[id.split('/').length - 1];
 }
@@ -65,4 +66,12 @@ resolver.define('delete-all', ({ context }) => {
   return kvs.set(getListKeyFromContext(context), []);
 });
 
+// Analytics resolvers
+
+resolver.define('track-event', trackEvent);
+resolver.define('identify', identify);
+resolver.define('group', group);
+
 export const handler = resolver.getDefinitions();
+
+export const dailyAnalytics = dailyGroupAnalytics;

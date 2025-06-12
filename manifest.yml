@@ -8,9 +8,15 @@ modules:
       viewportSize: medium
       tooltip: Add a todo list
       icon: https://developer.atlassian.com/platform/forge/images/issue-panel-icon.svg
+  scheduledTrigger:
+    - key: daily-analytics-scheduled-trigger
+      function: daily-analytics
+      interval: day
   function:
     - key: resolver
       handler: index.handler
+    - key: daily-analytics
+      handler: index.dailyAnalytics
 resources:
   - key: main
     path: static/spa/build
@@ -19,7 +25,13 @@ permissions:
     - storage:app
   content:
     styles:
-      - 'unsafe-inline'  
+      - 'unsafe-inline'
+  external:
+    fetch:
+      backend:
+        - address: "in.accoil.com"
+          category: analytics
+          inScopeEUD: false
 app:
   runtime:
     name: nodejs20.x
