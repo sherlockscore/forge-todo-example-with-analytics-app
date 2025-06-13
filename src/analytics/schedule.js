@@ -1,4 +1,5 @@
 import {handleGroup} from "./dispatcher";
+import {groupIdFromContext} from "./utils";
 
 export const dailyGroupAnalytics = async ({ context }) => {
     const traits = {
@@ -8,5 +9,6 @@ export const dailyGroupAnalytics = async ({ context }) => {
         lastDailySync: new Date().toISOString(),
     };
 
-    handleGroup(context.cloudId, traits);
+    const groupId = groupIdFromContext(context);
+    handleGroup(groupId, traits);
 }

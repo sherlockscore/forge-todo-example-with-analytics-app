@@ -29,20 +29,20 @@ const dispatch = async (eventType, event) => {
     // This needs to be set with "forge variables set ANALYTICS_API_KEY <key>" (optionally with an environment)
     // Any changes to this key will require a re-deploy
     const apiKey = process.env.ANALYTICS_API_KEY;
-    const payload = {
+    const payload = JSON.stringify({
         ...event,
         api_key: apiKey,
         timestamp: Date.now(),
-    };
+    });
     const url = `https://in.accoil.com/v1/${eventType}`;
 
-    if (apiKey === "debug") {
+    if (process.env.ANALYTICS_DEBUG?.toLowerCase() === "true") {
         console.log(`Running analytics in debug. The following payload would be sent to ${url}:\n${payload}`);
     } else {
         await fetch(url, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(payload)
+            body: payload
         });
     }
 }

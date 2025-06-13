@@ -1,20 +1,24 @@
 import {handleGroup, handleIdentify, handleTrackEvent} from "./dispatcher";
 import {track} from "./events";
+import {groupIdFromContext, userIdFromContext} from "./utils";
 
 export const trackEvent = async ({ payload, context }) => {
     await track(context, payload.event);
 }
 
 export const identify = async ({ context }) => {
+    const userId = userIdFromContext(context);
+    const groupId = groupIdFromContext(context);
     await handleIdentify(
-        context.accountId,
-        context.cloudId,
+        userId,
+        groupId,
         {
-            name: context.accountId,
+            name: userId,
         }
     );
 }
 
 export const group = async ({ context }) => {
-    await handleGroup(context.cloudId, {name: context.cloudId});
+    const groupId = groupIdFromContext(context);
+    await handleGroup(groupId, {name: groupId});
 }

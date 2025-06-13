@@ -1,16 +1,19 @@
 import { Queue } from '@forge/events';
+import {groupIdFromContext, userIdFromContext} from "./utils";
 
 const analyticsQueue = new Queue({ key: 'analytics-queue' });
 
 export const track = async (context, eventName) => {
     // Do the group and identify call here too
-    const identifyTraits = {name: context.accountId};
-    const groupTraits = {name: context.cloudId};
+    const userId = userIdFromContext(context);
+    const groupId = groupIdFromContext(context);
+    const identifyTraits = {name: userId};
+    const groupTraits = {name: groupId};
 
     const events = [
-        {type: "identify", userId: context.accountId, groupId: context.cloudId, traits: identifyTraits},
-        {type: "group", groupId: context.cloudId, traits: groupTraits},
-        {type: "track", userId: context.accountId, event: eventName},
+        {type: "identify", userId: userId, groupId: groupId, traits: identifyTraits},
+        {type: "group", groupId: groupId, traits: groupTraits},
+        {type: "track", userId: userId, event: eventName},
     ];
     await analyticsQueue.push(events);
 }
