@@ -1,8 +1,7 @@
 import Resolver from '@forge/resolver';
 import { kvs } from '@forge/kvs';
-import {group, identify, trackEvent} from "./analytics/resolvers";
-import {dailyGroupAnalytics} from "./analytics/schedule";
-import {trackCreate, trackDelete, trackDeleteAll, trackGetAll, trackUpdate} from "./analytics/events";
+import {trackEvent} from "./analytics/resolvers";
+import {trackCreate, trackDelete, trackDeleteAll, trackUpdate} from "./analytics/events";
 
 const resolver = new Resolver();
 
@@ -18,12 +17,11 @@ const getAll = async (listId) => {
 }
 
 resolver.define('get-all', async ({ context }) => {
-  await trackGetAll(context.accountId);
   return getAll(getListKeyFromContext(context));
 });
 
 resolver.define('create', async ({ payload, context }) => {
-  await trackCreate(context.accountId);
+  await trackCreate(context);
 
   const listId = getListKeyFromContext(context);
   const records = await getAll(listId);
@@ -40,7 +38,7 @@ resolver.define('create', async ({ payload, context }) => {
 });
 
 resolver.define('update', async ({ payload, context }) => {
-  await trackUpdate(context.accountId);
+  await trackUpdate(context);
 
   const listId = getListKeyFromContext(context);
   let records = await getAll(listId);
@@ -58,7 +56,7 @@ resolver.define('update', async ({ payload, context }) => {
 });
 
 resolver.define('delete', async ({ payload, context }) => {
-  await trackDelete(context.accountId);
+  await trackDelete(context);
 
   const listId = getListKeyFromContext(context);
   let records = await getAll(listId);
@@ -71,17 +69,12 @@ resolver.define('delete', async ({ payload, context }) => {
 });
 
 resolver.define('delete-all', async ({ context }) => {
-  await trackDeleteAll(context.accountId);
+  await trackDeleteAll(context);
 
   return kvs.set(getListKeyFromContext(context), []);
 });
 
 // Analytics resolvers
-
 resolver.define('track-event', trackEvent);
-resolver.define('identify', identify);
-resolver.define('group', group);
 
 export const handler = resolver.getDefinitions();
-
-export const dailyAnalytics = dailyGroupAnalytics;

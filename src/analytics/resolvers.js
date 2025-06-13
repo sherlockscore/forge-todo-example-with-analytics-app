@@ -1,7 +1,8 @@
 import {handleGroup, handleIdentify, handleTrackEvent} from "./dispatcher";
+import {track} from "./events";
 
 export const trackEvent = async ({ payload, context }) => {
-    await handleTrackEvent(context.accountId, payload.event);
+    await track(context, payload.event);
 }
 
 export const identify = async ({ context }) => {

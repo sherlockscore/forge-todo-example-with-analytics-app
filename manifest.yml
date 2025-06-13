@@ -22,7 +22,7 @@ modules:
     - key: resolver
       handler: index.handler
     - key: daily-analytics
-      handler: index.dailyAnalytics
+      handler: analytics/schedule.dailyGroupAnalytics
     - key: analytics-consumer-func
       handler: analytics/consumer.handler
 resources:

@@ -2,26 +2,31 @@ import { Queue } from '@forge/events';
 
 const analyticsQueue = new Queue({ key: 'analytics-queue' });
 
-const track = async (userId, eventName) => {
-    await analyticsQueue.push({userId: userId, event: eventName});
+export const track = async (context, eventName) => {
+    // Do the group and identify call here too
+    const identifyTraits = {name: context.accountId};
+    const groupTraits = {name: context.cloudId};
+
+    const events = [
+        {type: "identify", userId: context.accountId, groupId: context.cloudId, traits: identifyTraits},
+        {type: "group", groupId: context.cloudId, traits: groupTraits},
+        {type: "track", userId: context.accountId, event: eventName},
+    ];
+    await analyticsQueue.push(events);
 }
 
-export const trackGetAll = async (userId) => {
-    await track(userId, "Backend: Get All");
+export const trackCreate = async (context) => {
+    await track(context, "Backend: Create");
 }
 
-export const trackCreate = async (userId) => {
-    await track(userId, "Backend: Create");
+export const trackUpdate = async (context) => {
+    await track(context, "Backend: Update");
 }
 
-export const trackUpdate = async (userId) => {
-    await track(userId, "Backend: Update");
+export const trackDelete = async (context) => {
+    await track(context, "Backend: Delete");
 }
 
-export const trackDelete = async (userId) => {
-    await track(userId, "Backend: Delete");
-}
-
-export const trackDeleteAll = async (userId) => {
-    await track(userId, "Backend: Delete All");
+export const trackDeleteAll = async (context) => {
+    await track(context, "Backend: Delete All");
 }
