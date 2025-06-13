@@ -2,6 +2,7 @@ import Resolver from '@forge/resolver';
 import { kvs } from '@forge/kvs';
 import {group, identify, trackEvent} from "./analytics/resolvers";
 import {dailyGroupAnalytics} from "./analytics/schedule";
+import {trackCreate, trackDelete, trackDeleteAll, trackGetAll, trackUpdate} from "./analytics/events";
 
 const resolver = new Resolver();
 
@@ -16,11 +17,14 @@ const getAll = async (listId) => {
   return await kvs.get(listId) || [];
 }
 
-resolver.define('get-all', ({ context }) => {
+resolver.define('get-all', async ({ context }) => {
+  await trackGetAll(context.accountId);
   return getAll(getListKeyFromContext(context));
 });
 
 resolver.define('create', async ({ payload, context }) => {
+  await trackCreate(context.accountId);
+
   const listId = getListKeyFromContext(context);
   const records = await getAll(listId);
   const id = getUniqueId();
@@ -36,6 +40,8 @@ resolver.define('create', async ({ payload, context }) => {
 });
 
 resolver.define('update', async ({ payload, context }) => {
+  await trackUpdate(context.accountId);
+
   const listId = getListKeyFromContext(context);
   let records = await getAll(listId);
 
@@ -52,6 +58,8 @@ resolver.define('update', async ({ payload, context }) => {
 });
 
 resolver.define('delete', async ({ payload, context }) => {
+  await trackDelete(context.accountId);
+
   const listId = getListKeyFromContext(context);
   let records = await getAll(listId);
 
@@ -62,7 +70,9 @@ resolver.define('delete', async ({ payload, context }) => {
   return payload;
 });
 
-resolver.define('delete-all', ({ context }) => {
+resolver.define('delete-all', async ({ context }) => {
+  await trackDeleteAll(context.accountId);
+
   return kvs.set(getListKeyFromContext(context), []);
 });
 

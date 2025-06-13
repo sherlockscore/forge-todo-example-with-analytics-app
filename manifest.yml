@@ -12,11 +12,19 @@ modules:
     - key: daily-analytics-scheduled-trigger
       function: daily-analytics
       interval: day
+  consumer:
+    - key: analytics-consumer
+      queue: analytics-queue
+      resolver:
+        function: analytics-consumer-func
+        method: analytics-listener
   function:
     - key: resolver
       handler: index.handler
     - key: daily-analytics
       handler: index.dailyAnalytics
+    - key: analytics-consumer-func
+      handler: analytics/consumer.handler
 resources:
   - key: main
     path: static/spa/build
