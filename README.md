@@ -263,16 +263,23 @@ To add new events:
 Example:
 ```javascript
 // Add to src/analytics/events.js
-export const trackCustomEvent = async (context, eventData) => {
-    const events = [{
-        type: "track", 
-        userId: userIdFromContext(context),
-        event: "Custom Event",
-        properties: eventData
-    }];
-    await analyticsQueue.push(events);
+export const trackCustomEvent = async (context) => {
+    await track(context, "Custom Event Name");
+}
+
+// For events with different naming patterns:
+export const trackProjectCreated = async (context) => {
+    await track(context, "Project Created");
+}
+
+export const trackUserInvited = async (context) => {
+    await track(context, "User Invited");
 }
 ```
+
+**Note:** Accoil API does not support event properties, so all context and metadata 
+must be encoded in the event name itself. Use descriptive event names that capture 
+the essential information rather than relying on separate properties.
 
 ### Frontend
 - Change into the frontend directory by running:
