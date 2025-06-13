@@ -16,6 +16,10 @@ const getAll = async (listId) => {
   return await kvs.get(listId) || [];
 }
 
+export const getTodoCount = async () => {
+  return (await getAll('todo-panel')).length;
+}
+
 resolver.define('get-all', async ({ context }) => {
   return getAll(getListKeyFromContext(context));
 });
