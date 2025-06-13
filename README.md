@@ -18,10 +18,40 @@ See [Set up Forge](https://developer.atlassian.com/platform/forge/set-up-forge/)
 forge register
 ```
 
-### Configure API Key
-- Set the Accoil API key in the environment. This is available from you account in Accoil.
+### Configure the environment
+This app supports the following environment variables. It is recommended to set the variables in each environment
+as you progress through your development process. Note that changing variables requires a redeploy.
+
+See the [Forge documentation](https://developer.atlassian.com/platform/forge/environments-and-versions/#environment-variables) for more information on environment variables. 
+
+See the [Forge CLI documentation](https://developer.atlassian.com/platform/forge/cli-reference/variables/) for more information on using variables.
+
+#### `ANALYTICS_API_KEY`
+Set the Accoil API key in the environment. This is available from your account in Accoil. For example in development:
 ```
-forge variables set ANALYTICS_API_KEY <api_key>
+forge variables set --environment development ANALYTICS_API_KEY <your_api_key>
+```
+
+#### `ANALYTICS_DEBUG`
+Set this to `true` and no real calls will be made to Accoil, instead it will log lines like:
+```
+Running analytics in debug. The following payload would be sent to https://in.accoil.com/v1/users:
+{"user_id":"xxxx","group_id":"xxxx","traits":{"name":"xxxx"},"api_key":"xxxx","timestamp":1749789914400}
+```
+
+Set or unset with
+```
+forge variables set --environment development ANALYTICS_DEBUG true
+forge variables unset --environment development ANALYTICS_DEBUG
+```
+
+#### `ANALTYICS_GROUP_ID_OVERRIDE`
+Set this to `true` to always send the group ID in place of user IDs.
+
+Set or unset with
+```
+forge variables set --environment development ANALTYICS_GROUP_ID_OVERRIDE true
+forge variables unset --environment development ANALTYICS_GROUP_ID_OVERRIDE
 ```
 
 ### Frontend
