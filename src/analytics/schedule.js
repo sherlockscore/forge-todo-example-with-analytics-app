@@ -31,7 +31,7 @@ export const dailyGroupAnalytics = async ({ context }) => {
         isActive: context?.license?.isActive,
         isEvaluation: context?.license?.isEvaluation,
         lastDailySync: new Date().toISOString(), // Track when analytics were last updated
-        totalTodoCount: await getTodoCount(),
+        totalTodoCount: `${await getTodoCount()}`,
     };
 
     const groupId = groupIdFromContext(context);
