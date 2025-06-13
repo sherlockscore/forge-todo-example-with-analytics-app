@@ -1,5 +1,7 @@
 import Resolver from '@forge/resolver';
 import { kvs } from '@forge/kvs';
+
+// Analytics imports for tracking user interactions
 import {trackEvent} from "./analytics/resolvers";
 import {trackCreate, trackDelete, trackDeleteAll, trackUpdate} from "./analytics/events";
 
@@ -25,6 +27,7 @@ resolver.define('get-all', async ({ context }) => {
 });
 
 resolver.define('create', async ({ payload, context }) => {
+  // Track todo creation for analytics
   await trackCreate(context);
 
   const listId = getListKeyFromContext(context);
@@ -42,6 +45,7 @@ resolver.define('create', async ({ payload, context }) => {
 });
 
 resolver.define('update', async ({ payload, context }) => {
+  // Track todo updates (e.g., checking/unchecking items) for analytics
   await trackUpdate(context);
 
   const listId = getListKeyFromContext(context);
@@ -60,6 +64,7 @@ resolver.define('update', async ({ payload, context }) => {
 });
 
 resolver.define('delete', async ({ payload, context }) => {
+  // Track individual todo deletion for analytics
   await trackDelete(context);
 
   const listId = getListKeyFromContext(context);
@@ -73,12 +78,22 @@ resolver.define('delete', async ({ payload, context }) => {
 });
 
 resolver.define('delete-all', async ({ context }) => {
+  // Track bulk deletion for analytics
   await trackDeleteAll(context);
 
   return kvs.set(getListKeyFromContext(context), []);
 });
 
-// Analytics resolvers
+// Register analytics resolvers for frontend-triggered events
+// Primary resolver: track-event (used for all event tracking)
 resolver.define('track-event', trackEvent);
+
+// Example resolvers: identify and group (typically not used)
+// These are provided as examples but are generally unnecessary since:
+// - identify/group calls are automatically handled by track events
+// - scheduled jobs handle regular group updates with license data
+// Uncomment if you need explicit identify/group calls from frontend:
+// resolver.define('identify', identify);
+// resolver.define('group', group);
 
 export const handler = resolver.getDefinitions();
