@@ -45,13 +45,13 @@ forge variables set --environment development ANALYTICS_DEBUG true
 forge variables unset --environment development ANALYTICS_DEBUG
 ```
 
-#### `ANALTYICS_GROUP_ID_OVERRIDE`
+#### `ANALTYICS_USER_ID_OVERRIDE`
 Set this to `true` to always send the group ID in place of user IDs.
 
 Set or unset with
 ```
-forge variables set --environment development ANALTYICS_GROUP_ID_OVERRIDE true
-forge variables unset --environment development ANALTYICS_GROUP_ID_OVERRIDE
+forge variables set --environment development ANALTYICS_USER_ID_OVERRIDE true
+forge variables unset --environment development ANALTYICS_USER_ID_OVERRIDE
 ```
 
 ### Frontend
