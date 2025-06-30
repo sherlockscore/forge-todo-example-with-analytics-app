@@ -322,4 +322,4 @@ See [Get help](https://developer.atlassian.com/platform/forge/get-help/) for how
 Contributions are welcome! Please see CONTRIBUTING.md for details.
 
 ## License
-Copyright (c) 2020 Atlassian and others. Apache 2.0 licensed, see LICENSE file.
+Copyright (c) 2025 Accoil, Atlassian and others. Apache 2.0 licensed, see LICENSE file.
