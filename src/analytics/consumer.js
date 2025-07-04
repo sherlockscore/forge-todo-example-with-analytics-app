@@ -10,9 +10,6 @@
  * - resolver method: analytics-listener
  */
 import {handleGroup, handleIdentify, handleTrackEvent} from "./dispatcher";
-import Resolver from "@forge/resolver";
-
-const resolver = new Resolver();
 
 /**
  * Main analytics event processor
@@ -26,14 +23,15 @@ const resolver = new Resolver();
  * - group: Update organization/instance information  
  * - track: Record user action events
  * 
- * @param {Object} payload - Event data from the queue
- * @param {string} payload.type - Event type (identify, group, track)
- * @param {string} payload.userId - User identifier
- * @param {string} payload.groupId - Organization identifier
- * @param {Object} payload.traits - Additional attributes
- * @param {string} payload.event - Event name (for track events)
+ * @param {Object} event - Event data from the queue with type of AsyncEvent
+ * @param {string} event.body.type - Event type (identify, group, track)
+ * @param {string} event.body.userId - User identifier
+ * @param {string} event.body.groupId - Organization identifier
+ * @param {Object} event.body.traits - Additional attributes
+ * @param {string} event.body.event - Event name (for track events)
  */
-resolver.define('analytics-listener', async ({ payload }) => {
+export const handler = async (event) => {
+    const payload = event.body;
     switch (payload.type){
         case "identify":
             await handleIdentify(payload.userId, payload.groupId, payload.traits);
@@ -48,7 +46,4 @@ resolver.define('analytics-listener', async ({ payload }) => {
             // Log unknown event types for debugging
             console.log(`analytics-listener: unable to process payload with type ${payload.type}`);
     }
-});
-
-// Export resolver definitions for Forge runtime
-export const handler = resolver.getDefinitions();
+};

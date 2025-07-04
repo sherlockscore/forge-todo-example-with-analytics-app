@@ -26,9 +26,9 @@ export const track = async (context, eventName) => {
     // Bundle all three event types for atomic processing
     // This ensures user identity is always current when events are processed
     const events = [
-        {type: "identify", userId: userId, groupId: groupId, traits: identifyTraits},
-        {type: "group", groupId: groupId, traits: groupTraits},
-        {type: "track", userId: userId, event: eventName},
+        {body: {type: "identify", userId: userId, groupId: groupId, traits: identifyTraits}},
+        {body: {type: "group", groupId: groupId, traits: groupTraits}},
+        {body: {type: "track", userId: userId, event: eventName}},
     ];
     
     await analyticsQueue.push(events);
