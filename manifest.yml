@@ -15,9 +15,7 @@ modules:
   consumer:
     - key: analytics-consumer
       queue: analytics-queue
-      resolver:
-        function: analytics-consumer-func
-        method: analytics-listener
+      function: analytics-consumer-func
   function:
     - key: resolver
       handler: index.handler
