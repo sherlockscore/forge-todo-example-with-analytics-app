@@ -72,15 +72,18 @@ Frontend (React)
 ├── Analytics Events (static/spa/src/analytics/events.js)
 │   └── trackTodoItemsLoaded()
 │
-└── Forge Bridge → Backend Resolvers
+└── Forge Bridge → Backend Resolvers (Frontend communication only)
                    │
                    ├── Track Events (src/analytics/resolvers.js)
-                   ├── Event Queue (src/analytics/events.js)
-                   ├── Queue Consumer (src/analytics/consumer.js)
-                   ├── Dispatcher (src/analytics/dispatcher.js)
-                   └── Scheduled Jobs (src/analytics/schedule.js)
-                      │
-                      └── Accoil API (https://in.accoil.com)
+                   └── Event Queue (src/analytics/events.js)
+                       │
+                       ├── Queue Consumer Function (src/analytics/consumer.js)
+                       │   └── Direct function handler (Forge Events 2.0)
+                       │
+                       ├── Event Dispatcher (src/analytics/dispatcher.js)
+                       └── Scheduled Jobs (src/analytics/schedule.js)
+                           │
+                           └── Accoil API (https://in.accoil.com)
 ```
 
 ### 📊 Event Types
@@ -115,6 +118,11 @@ The analytics implementation adheres to Atlassian's privacy requirements:
 
 ### 🧩 Implementation Details
 
+For comprehensive implementation guidance and best practices, see:
+- [Complete Analytics Setup Guide](https://developer.accoil.com/docs/complete-analytics-setup-in-atlassian-forge)
+- [Analytics Architecture Overview](https://developer.accoil.com/docs/analytics-architecture-overview-for-forge-apps)
+- [Event Queue Implementation](https://developer.accoil.com/docs/implementing-the-event-queue-system)
+
 #### Frontend Integration
 
 The frontend uses a simple event tracking pattern:
@@ -141,14 +149,18 @@ resolver.define('create', async ({ payload, context }) => {
 });
 ```
 
-#### Event Queue System
+#### Event Queue System (Forge Events 2.0)
 
-The analytics system uses Forge Events for reliable delivery:
+The analytics system uses Forge Events 2.0 for reliable delivery:
 
 1. **Events are queued** using `@forge/events` Queue
-2. **Consumer processes** events asynchronously via `analytics-consumer`
+2. **Consumer function processes** events asynchronously via direct function declaration in `manifest.yml`
+   - No resolvers needed - uses `handler` export pattern
+   - Configured as: `handler: analytics/consumer.handler`
 3. **Dispatcher handles** different event types (track, identify, group)
 4. **HTTP requests** are sent to Accoil API with proper error handling
+
+Note: Resolvers are only used for frontend-to-backend communication. Event consumers use direct function handlers as per Forge Events 2.0 architecture.
 
 #### Identity Management
 
@@ -189,15 +201,15 @@ This sends the `cloudId` as the user ID for all events, consolidating tracking a
 
 ```
 src/analytics/
-├── events.js      # Backend event definitions (single source of truth)
-├── resolvers.js   # Resolver functions for frontend-triggered events
+├── events.js      # Backend event definitions and queue management
+├── resolvers.js   # Frontend-backend bridge (resolvers for UI communication only)
 ├── dispatcher.js  # HTTP dispatch logic for Accoil API
-├── consumer.js    # Queue consumer for processing events
-├── schedule.js    # Scheduled job for daily group analytics
+├── consumer.js    # Queue consumer function (Forge Events 2.0 direct handler)
+├── schedule.js    # Scheduled job function for daily group analytics
 └── utils.js       # Utility functions for context processing
 
 static/spa/src/analytics/
-└── events.js      # Frontend event definitions (single source of truth)
+└── events.js      # Frontend event definitions
 ```
 
 ### 🎯 Event Definition Strategy

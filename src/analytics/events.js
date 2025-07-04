@@ -6,13 +6,7 @@ import {groupIdFromContext, userIdFromContext} from "./utils";
 const analyticsQueue = new Queue({ key: 'analytics-queue' });
 
 /**
- * Core tracking function that creates identify, group, and track events
- * 
- * This approach ensures every track call also updates user and group information,
- * maintaining consistency across analytics platforms that require separate identify/group calls.
- * 
- * @param {Object} context - Forge resolver context containing accountId, cloudId, etc.
- * @param {string} eventName - Human-readable event name for tracking
+ * Queue analytics events (identify, group, track) for processing
  */
 export const track = async (context, eventName) => {
     // Extract privacy-safe identifiers from Forge context
@@ -35,57 +29,24 @@ export const track = async (context, eventName) => {
 }
 
 /**
- * BACKEND EVENT DEFINITIONS
+ * Backend Event Definitions
  * 
- * This file serves as the single source of truth for all backend analytics events.
- * By centralizing event definitions here, we can:
- * 
- * 1. **Audit all tracked events** - See every backend event in one place
- * 2. **Maintain consistency** - Ensure event names follow conventions
- * 3. **Easy discovery** - Find where specific events are tracked without hunting through code
- * 4. **Change management** - Update event names or add properties in one location
- * 
- * NAMING CONVENTION:
- * Event names should follow the "Object Verb" format for consistency and clarity.
- * Examples:
- * - "Todo Created" (not "Create Todo" or "Backend: Create")
- * - "Todo Updated" (not "Update Todo" or "Todo Modified")
- * - "Todo Deleted" (not "Delete Todo" or "Removed Todo")
- * - "Todo Cleared" (not "Delete All" or "Clear All Todos")
- * 
- * Each function here represents a specific user action or system event that we want
- * to track in our analytics platform. When adding new events, define them here first,
- * then call them from the appropriate business logic locations.
+ * Event naming convention: "Object Verb" (e.g., "Todo Created", "Todo Updated")
+ * See: https://developer.accoil.com/docs/analytics-architecture-overview-for-forge-apps
  */
 
-/**
- * Track todo item creation
- * Called when a new todo item is successfully created
- */
 export const trackCreate = async (context) => {
     await track(context, "Todo Created");
 }
 
-/**
- * Track todo item updates (e.g., checking/unchecking items)
- * Called when a todo item is modified
- */
 export const trackUpdate = async (context) => {
     await track(context, "Todo Updated");
 }
 
-/**
- * Track single todo item deletion
- * Called when a user deletes a specific todo item
- */
 export const trackDelete = async (context) => {
     await track(context, "Todo Deleted");
 }
 
-/**
- * Track bulk deletion of all todos
- * Called when a user clears their entire todo list
- */
 export const trackDeleteAll = async (context) => {
     await track(context, "Todo Cleared");
 }
