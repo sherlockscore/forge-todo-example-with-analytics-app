@@ -20,6 +20,11 @@
   "devDependencies": {
     "react-scripts": "^5.0.1"
   },
+  "overrides": {
+    "sucrase": {
+      "glob": "10.5.0"
+    }
+  },
   "resolutions": {
     "@babel/traverse": "^7.23.2",
     "@babel/runtime": "^7.26.10"
