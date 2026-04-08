@@ -1,12 +1,14 @@
 import Resolver from '@forge/resolver';
 import { kvs } from '@forge/kvs';
 
+import {trackEvent} from "./analytics/resolvers";
+import {trackCreate, trackDelete, trackDeleteAll, trackUpdate} from "./analytics/events";
+
 const resolver = new Resolver();
 
 const getUniqueId = () => '_' + Math.random().toString(36).substr(2, 9);
 
 const getListKeyFromContext = (context) => {
-  console.log(context);
   const { localId: id } = context;
   return id.split('/')[id.split('/').length - 1];
 }
@@ -15,11 +17,17 @@ const getAll = async (listId) => {
   return await kvs.get(listId) || [];
 }
 
-resolver.define('get-all', ({ context }) => {
+export const getTodoCount = async () => {
+  return (await getAll('todo-panel')).length;
+}
+
+resolver.define('get-all', async ({ context }) => {
   return getAll(getListKeyFromContext(context));
 });
 
 resolver.define('create', async ({ payload, context }) => {
+  await trackCreate(context);
+
   const listId = getListKeyFromContext(context);
   const records = await getAll(listId);
   const id = getUniqueId();
@@ -35,6 +43,8 @@ resolver.define('create', async ({ payload, context }) => {
 });
 
 resolver.define('update', async ({ payload, context }) => {
+  await trackUpdate(context);
+
   const listId = getListKeyFromContext(context);
   let records = await getAll(listId);
 
@@ -51,6 +61,8 @@ resolver.define('update', async ({ payload, context }) => {
 });
 
 resolver.define('delete', async ({ payload, context }) => {
+  await trackDelete(context);
+
   const listId = getListKeyFromContext(context);
   let records = await getAll(listId);
 
@@ -61,8 +73,13 @@ resolver.define('delete', async ({ payload, context }) => {
   return payload;
 });
 
-resolver.define('delete-all', ({ context }) => {
+resolver.define('delete-all', async ({ context }) => {
+  await trackDeleteAll(context);
+
   return kvs.set(getListKeyFromContext(context), []);
 });
+
+// Frontend analytics bridge
+resolver.define('track-event', trackEvent);
 
 export const handler = resolver.getDefinitions();

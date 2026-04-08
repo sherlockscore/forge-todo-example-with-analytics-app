@@ -16,6 +16,7 @@ import {
   Card, Row, Icon, IconContainer, Status, SummaryActions, SummaryCount, SummaryFooter,
   ScrollContainer, Form, LoadingContainer
 } from './Styles';
+import { trackTodoItemsLoaded } from "./analytics/events";
 
 function App() {
   const [todos, setTodos] = useState(null);
@@ -26,7 +27,10 @@ function App() {
 
   if (!isFetched) {
     setIsFetched(true);
-    invoke('get-all').then(setTodos);
+    invoke('get-all').then((values) => {
+      trackTodoItemsLoaded();
+      setTodos(values);
+    });
   }
 
   const createTodo = async (label) => {
