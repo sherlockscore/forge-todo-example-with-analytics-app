@@ -51,6 +51,36 @@ forge variables set --environment development ANALYTICS_DEBUG true
 forge variables unset --environment development ANALYTICS_DEBUG
 ```
 
+#### `ANALYTICS_TRACE_DEBUG`
+Set this to `true` to make real HTTP requests to Accoil APIs while logging detailed request/response information including:
+- Complete HTTP request details (URL, headers, payload)
+- Response timing and status information
+- Response headers and body content
+- Detailed error logging for failed requests
+
+This is useful for debugging API integration issues, monitoring request performance, and verifying successful data transmission.
+
+Example trace debug output:
+```
+TRACE DEBUG: Making HTTP request to https://in.accoil.com/v1/events
+TRACE DEBUG: Request headers: {"Content-Type": "application/json"}
+TRACE DEBUG: Request payload:
+{"user_id":"xxxx","event":"Todo Created","api_key":"[REDACTED]","timestamp":1756439464461}
+TRACE DEBUG: Response received in 245ms
+TRACE DEBUG: Response status: 200 OK
+TRACE DEBUG: Response headers: {"content-type": "application/json", "content-length": "15"}
+TRACE DEBUG: Response body: {"success": true}
+TRACE DEBUG: Request completed successfully
+```
+
+**Note:** When `ANALYTICS_TRACE_DEBUG` is enabled, it overrides `ANALYTICS_DEBUG` behavior - real HTTP requests are made instead of just logging payloads.
+
+Set or unset with
+```
+forge variables set --environment development ANALYTICS_TRACE_DEBUG true
+forge variables unset --environment development ANALYTICS_TRACE_DEBUG
+```
+
 #### `ANALTYICS_USER_ID_OVERRIDE`
 Set this to `true` to always send the group ID in place of user IDs. This is useful for reducing Monthly Tracked Users (MTU) costs by consolidating user identification at the instance level.
 
@@ -172,9 +202,11 @@ The system provides flexible identity resolution:
 
 ### 🛠️ Analytics Configuration
 
-#### Debug Mode
+#### Debug Modes
 
-Enable debug mode to test analytics without sending real data:
+The analytics system supports multiple debug modes for development and troubleshooting:
+
+**Standard Debug Mode** - Test analytics without sending real data:
 
 ```bash
 forge variables set --environment development ANALYTICS_DEBUG true
@@ -186,6 +218,27 @@ This will log payloads instead of sending HTTP requests:
 Running analytics in debug. The following payload would be sent to https://in.accoil.com/v1/events:
 {"user_id":"123","event":"Todo Created","api_key":"[REDACTED]","timestamp":1749789914400}
 ```
+
+**Trace Debug Mode** - Make real HTTP requests with detailed logging:
+
+```bash
+forge variables set --environment development ANALYTICS_TRACE_DEBUG true
+```
+
+This provides comprehensive HTTP request/response debugging:
+
+```
+TRACE DEBUG: Making HTTP request to https://in.accoil.com/v1/events
+TRACE DEBUG: Request headers: {"Content-Type": "application/json"}
+TRACE DEBUG: Request payload: {"user_id":"123","event":"Todo Created","api_key":"[REDACTED]","timestamp":1756439464461}
+TRACE DEBUG: Response received in 245ms
+TRACE DEBUG: Response status: 200 OK
+TRACE DEBUG: Response headers: {"content-type": "application/json", "content-length": "15"}
+TRACE DEBUG: Response body: {"success": true}
+TRACE DEBUG: Request completed successfully
+```
+
+**Note:** Trace debug mode overrides standard debug mode - when enabled, real HTTP requests are made to the Accoil API.
 
 #### Cost Optimization
 
